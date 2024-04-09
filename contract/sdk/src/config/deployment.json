@@ -1,0 +1,11 @@
+{
+    "1": {
+      "UniChatHelper": {
+        "proxyAddress": "0x065b4C89A2762E848206044e0323aD10004B6F3b",
+        "implAddress": "0x065b4C89A2762E848206044e0323aD10004B6F3b",
+        "version": "1.0.0",
+        "operator": "0x83B4c3b2d3eBFc6cFAc4e2387d96C5F62942DA04",
+        "fromBlock": 0
+      }
+    }
+}
