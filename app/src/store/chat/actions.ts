@@ -13,16 +13,6 @@ const actions: ActionTree<ChatState, RootState> = {
     }
   },
 
-  async getTokenData({ rootState }, address: string) {
-    let tokenData = rootState.app.async.tokenList!.find((e) => {
-      return e.address == address;
-    });
-    if (!tokenData) {
-      return await rootState.app.sync.ether.uniChatHelper!.contract.batchGetTokenData([address]);
-    }
-    return tokenData;
-  },
-
   async sendMessage({ rootState, state }, data: string) {
     const to = state.sync.activeTo;
     const from = await rootState.app.sync.ether.singer!.getAddress();

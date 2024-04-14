@@ -6,8 +6,7 @@
         <a-select-option v-if="searchData.to" :value="searchData.to">
           <div @click="selectChat(searchData.to)">
             <div class="avatar">
-              <my-avatar :avatar="appSync.avatarMap[searchData.to]" :showButton="false"
-                :showName="searchData.to"></my-avatar>
+              <my-avatar :avatar="getRoomLogo()" :showButton="false" :showName="searchData.to"></my-avatar>
               <span class="avatar-name">{{ searchData.text }}</span>
             </div>
           </div>
@@ -39,13 +38,31 @@ export default class MySearch extends Vue {
 
   searchData: { to?: string; text?: string } = {};
 
+  getRoomLogo() {
+    try {
+      if (this.appAsync.tokenMap[this.searchData.to!.toString()].logo) {
+        return this.appAsync.tokenMap[this.searchData.to!.toString()].logo;
+      }
+      throw '';
+    } catch (error) {
+      return './static/token/empty-token.png';
+    }
+  }
+
   async handleSearch(to: string) {
     if (utils.ethers.isAddress(to)) {
       to = utils.ethers.getAddress(to);
       const { length } = await this.appSync.api.getMessage(this.appSync.ether.chainId!.toString(), to, 0, 0);
+      await this.$store.dispatch('app/getTokenData', [to]);
+      await this.$store.dispatch('app/getTokenBalance', { contract: to, addressList: [this.appSync.userAddress] });
       this.searchData = {
         to,
-        text: `${length} messages`,
+        text: `${utils.format.balance(
+        this.appAsync.balanceMap[to][this.appSync.userAddress],
+        18,
+        this.appAsync.tokenMap[to].symbol,
+        this.appSync.decimalLimit
+      )}(${length} messages)`,
       };
     }
   }

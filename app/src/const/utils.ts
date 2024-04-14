@@ -45,6 +45,7 @@ export async function retry(func: Function, time: number, args?: Array<any>, cal
       await callback(res);
     }
     return res;
+    // eslint-disable-next-line prettier/prettier
   } catch (error:any) {
     time--;
     if (time > 0) {

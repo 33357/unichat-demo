@@ -55,6 +55,39 @@ const actions: ActionTree<AppState, RootState> = {
     }
   },
 
+  async getTokenData({ state }, addressList: string[]) {
+    const _addressList = addressList.filter((address) => {
+      if (!state.async.tokenMap[address]) {
+        return true;
+      }
+      return false;
+    });
+    if (_addressList.length > 0) {
+      const tokenDataList = await state.sync.ether.uniChatHelper!.contract.batchGetTokenData(_addressList);
+      tokenDataList.forEach((tokenData, index) => {
+        state.async.tokenMap[_addressList[index]] = tokenData;
+      });
+    }
+  },
+
+  async getTokenBalance({ state }, { contract, addressList }: { contract: string; addressList: string[] }) {
+    if (!state.async.balanceMap[contract]) {
+      state.async.balanceMap[contract] = {};
+    }
+    const _addressList = addressList.filter((address) => {
+      if (!state.async.balanceMap[contract][address]) {
+        return true;
+      }
+      return false;
+    });
+    if (_addressList.length > 0) {
+      const balanceList = await state.sync.ether.uniChatHelper!.contract.batchGetUserListBalance(contract, addressList);
+      balanceList.forEach((balance, index) => {
+        state.async.balanceMap[contract][_addressList[index]] = balance;
+      });
+    }
+  },
+
   async setTokenMap({ state, dispatch }) {
     const addressList: string[] = [];
     state.async.tokenList = (await state.sync.api.getTokenList()).filter((e) => {
