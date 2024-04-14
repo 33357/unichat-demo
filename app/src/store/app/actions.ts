@@ -109,6 +109,7 @@ const actions: ActionTree<AppState, RootState> = {
       name: 'Ethereum',
       symbol: 'ETH',
       decimals: 18,
+      logo: './static/token/ethereum.webp',
     };
     const [balance, balanceList] = await Promise.all([
       state.sync.ether.singer!.getBalance(),
